@@ -148,25 +148,24 @@ function buildPopupContent(pin) {
 
 // --- Editor actions ---
 
+let waitingForPin = false;
+
 function toggleAddPinMode() {
   const btn = document.getElementById('btn-add-pin');
-  if (btn.classList.contains('active')) {
-    btn.classList.remove('active');
-    btn.textContent = 'Add Pin';
-    document.getElementById('map').style.cursor = '';
-    map.off('click', onMapClickForPin);
-    return;
-  }
-
-  btn.classList.add('active');
-  btn.textContent = 'Click map to place pin...';
-  document.getElementById('map').style.cursor = 'crosshair';
-  map.once('click', onMapClickForPin);
+  waitingForPin = !waitingForPin;
+  btn.classList.toggle('active', waitingForPin);
+  btn.textContent = waitingForPin ? 'Click map to place pin...' : 'Add Pin';
+  document.getElementById('map').style.cursor = waitingForPin ? 'crosshair' : '';
 }
 
-function onMapClickForPin(e) {
-  openAddPinDialog(e.latlng.lat, e.latlng.lng);
-}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('map').addEventListener('click', (e) => {
+    if (!waitingForPin || !map) return;
+    const latlng = map.containerPointToLatLng(L.point(e.layerX, e.layerY));
+    openAddPinDialog(latlng.lat, latlng.lng);
+    waitingForPin = false;
+  });
+});
 
 function openAddPinDialog(lat, lng) {
   const btn = document.getElementById('btn-add-pin');
