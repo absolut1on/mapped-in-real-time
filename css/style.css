@@ -87,6 +87,10 @@ body {
   background: #2b6de0;
 }
 
+#btn-add-pin.active {
+  background: #ff6b35;
+}
+
 .temp-pin .pin-icon {
   animation: pulse 1s ease-in-out infinite;
 }
