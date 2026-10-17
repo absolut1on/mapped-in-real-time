@@ -1,20 +1,12 @@
-let supabase;
-
-try {
-  const lib = window.supabase;
-  supabase = lib.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-} catch (e) {
-  console.error('Supabase init failed:', e);
-  document.body.innerHTML = '<div style="color:#ff6b6b;padding:40px;text-align:center;">Failed to connect to Supabase. Check config.js values.</div>';
-}
+const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
 async function getSession() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await sb.auth.getSession();
   return session;
 }
 
 async function getUserRole(userId) {
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('user_roles')
     .select('role')
     .eq('user_id', userId)
@@ -25,18 +17,18 @@ async function getUserRole(userId) {
 }
 
 async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data;
 }
 
 async function signUp(email, password) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await sb.auth.signUp({ email, password });
   if (error) throw error;
   return data;
 }
 
 async function signOut() {
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
   window.location.href = 'login.html';
 }

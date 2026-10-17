@@ -44,7 +44,7 @@ async function initEditor() {
 }
 
 async function loadPins() {
-  const { data: pins, error } = await supabase
+  const { data: pins, error } = await sb
     .from('pins')
     .select('*');
 
@@ -57,7 +57,7 @@ async function loadPins() {
 }
 
 function subscribeToChanges() {
-  supabase
+  sb
     .channel('pins-editor')
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'pins' },
@@ -212,9 +212,9 @@ async function savePinFromDialog() {
 
   let error;
   if (id) {
-    ({ error } = await supabase.from('pins').update(pinData).eq('id', id));
+    ({ error } = await sb.from('pins').update(pinData).eq('id', id));
   } else {
-    ({ error } = await supabase.from('pins').insert(pinData));
+    ({ error } = await sb.from('pins').insert(pinData));
   }
 
   if (error) {
@@ -226,14 +226,14 @@ async function savePinFromDialog() {
 }
 
 async function updatePinPosition(id, lat, lng) {
-  const { error } = await supabase.from('pins').update({ lat, lng }).eq('id', id);
+  const { error } = await sb.from('pins').update({ lat, lng }).eq('id', id);
   if (error) console.error('Failed to move pin:', error);
 }
 
 async function deletePin(id) {
   if (!confirm('Delete this pin?')) return;
   map.closePopup();
-  const { error } = await supabase.from('pins').delete().eq('id', id);
+  const { error } = await sb.from('pins').delete().eq('id', id);
   if (error) alert('Failed to delete pin: ' + error.message);
 }
 

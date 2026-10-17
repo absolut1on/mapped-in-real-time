@@ -1,4 +1,4 @@
-const supabasePublic = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const sbPublic = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
 let map;
 let markers = new Map();
@@ -21,7 +21,7 @@ function initViewer() {
 }
 
 async function loadPins() {
-  const { data: pins, error } = await supabasePublic
+  const { data: pins, error } = await sbPublic
     .from('pins')
     .select('*');
 
@@ -34,7 +34,7 @@ async function loadPins() {
 }
 
 function subscribeToChanges() {
-  supabasePublic
+  sbPublic
     .channel('pins-realtime')
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'pins' },
