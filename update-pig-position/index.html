@@ -14,15 +14,14 @@
       <span class="role-badge editor">editor</span>
     </div>
     <div class="header-right">
-      <div id="editor-controls" style="display:flex">
-        <button id="btn-add-pin" class="btn-primary" onclick="toggleAddPinMode()">Add Pin</button>
-      </div>
       <span id="user-email"></span>
       <button class="btn-secondary btn-sm" onclick="signOut()">Sign out</button>
     </div>
   </header>
 
   <div id="map"></div>
+
+  <button id="btn-add-pin" onclick="toggleAddPinMode()">+ Add Pin</button>
 
   <!-- Add/Edit pin dialog -->
   <div id="pin-dialog" class="dialog-overlay">

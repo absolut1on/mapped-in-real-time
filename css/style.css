@@ -66,13 +66,28 @@ body {
   color: #aaa;
 }
 
-#editor-controls {
-  display: flex !important;
-  gap: 8px;
+#btn-add-pin {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #3a86ff;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  cursor: pointer;
 }
 
-#btn-add-pin {
-  display: inline-block !important;
+#btn-add-pin:hover {
+  background: #2b6de0;
+}
+
+#btn-add-pin.active {
+  background: #ff6b35;
 }
 
 /* --- Buttons --- */
