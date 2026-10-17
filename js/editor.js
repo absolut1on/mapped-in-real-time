@@ -151,29 +151,28 @@ function buildPopupContent(pin) {
 
 function toggleAddPinMode() {
   const btn = document.getElementById('btn-add-pin');
-  const isActive = btn.getAttribute('data-active') === 'true';
-  btn.setAttribute('data-active', isActive ? 'false' : 'true');
-  btn.classList.toggle('active', !isActive);
-  btn.textContent = !isActive ? 'Click map to place pin...' : 'Add Pin';
-  document.getElementById('map').style.cursor = !isActive ? 'crosshair' : '';
+  const isActive = btn.classList.contains('active');
+
+  if (isActive) {
+    btn.classList.remove('active');
+    btn.textContent = '+ Add Pin';
+    map.off('click', handleMapClick);
+  } else {
+    btn.classList.add('active');
+    btn.textContent = 'Tap map to place pin...';
+    map.on('click', handleMapClick);
+  }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('map').addEventListener('click', (e) => {
-    const btn = document.getElementById('btn-add-pin');
-    if (!btn || btn.getAttribute('data-active') !== 'true' || !map) return;
-    const latlng = map.containerPointToLatLng(L.point(e.layerX, e.layerY));
-    btn.setAttribute('data-active', 'false');
-    openAddPinDialog(latlng.lat, latlng.lng);
-  });
-});
+function handleMapClick(e) {
+  map.off('click', handleMapClick);
+  openAddPinDialog(e.latlng.lat, e.latlng.lng);
+}
 
 function openAddPinDialog(lat, lng) {
   const btn = document.getElementById('btn-add-pin');
-  btn.setAttribute('data-active', 'false');
   btn.classList.remove('active');
-  btn.textContent = 'Add Pin';
-  document.getElementById('map').style.cursor = '';
+  btn.textContent = '+ Add Pin';
 
   document.getElementById('dialog-title').textContent = 'Add Pin';
   document.getElementById('pin-label').value = '';
@@ -200,10 +199,9 @@ function openEditPinDialog(pin) {
 function closePinDialog() {
   document.getElementById('pin-dialog').style.display = 'none';
   const btn = document.getElementById('btn-add-pin');
-  btn.setAttribute('data-active', 'false');
   btn.classList.remove('active');
-  btn.textContent = 'Add Pin';
-  document.getElementById('map').style.cursor = '';
+  btn.textContent = '+ Add Pin';
+  map.off('click', handleMapClick);
 }
 
 async function savePinFromDialog() {
