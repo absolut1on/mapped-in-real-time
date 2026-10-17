@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Sign In — Mapped in Real Time</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <h1>Editor Access</h1>
+    <p class="subtitle">Sign in to manage map pins</p>
+
+    <form id="auth-form" onsubmit="handleAuth(event)">
+      <label for="email">Email</label>
+      <input type="email" id="email" required autocomplete="email">
+
+      <label for="password">Password</label>
+      <input type="password" id="password" required minlength="6" autocomplete="current-password">
+
+      <button type="submit" class="btn-primary" id="auth-btn">Sign In</button>
+    </form>
+
+    <span class="toggle-link" onclick="toggleMode()">
+      <span id="toggle-text">Don't have an account? Sign up</span>
+    </span>
+
+    <p id="error-msg" class="error-msg"></p>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    let isSignUp = false;
+
+    function toggleMode() {
+      isSignUp = !isSignUp;
+      document.getElementById('auth-btn').textContent = isSignUp ? 'Sign Up' : 'Sign In';
+      document.getElementById('toggle-text').textContent = isSignUp
+        ? 'Already have an account? Sign in'
+        : "Don't have an account? Sign up";
+      document.getElementById('error-msg').textContent = '';
+    }
+
+    async function handleAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('error-msg');
+      errorEl.textContent = '';
+
+      try {
+        if (isSignUp) {
+          await signUp(email, password);
+          errorEl.style.color = '#52b788';
+          errorEl.textContent = 'Check your email to confirm your account.';
+        } else {
+          await signIn(email, password);
+          window.location.href = './';
+        }
+      } catch (err) {
+        errorEl.style.color = '#ff6b6b';
+        errorEl.textContent = err.message;
+      }
+    }
+
+    getSession().then(session => {
+      if (session) window.location.href = './';
+    });
+  </script>
+</body>
+</html>
