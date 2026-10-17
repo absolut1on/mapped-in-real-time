@@ -201,6 +201,8 @@ function closePinDialog() {
     map.removeLayer(tempMarker);
     tempMarker = null;
   }
+  document.activeElement.blur();
+  setTimeout(function () { map.invalidateSize(); }, 100);
 }
 
 async function savePinFromDialog() {
