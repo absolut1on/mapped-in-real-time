@@ -149,31 +149,30 @@ function buildPopupContent(pin) {
 
 // --- Editor actions ---
 
-function toggleAddPinMode() {
-  const btn = document.getElementById('btn-add-pin');
-  const isActive = btn.classList.contains('active');
+let tempMarker = null;
 
-  if (isActive) {
-    btn.classList.remove('active');
-    btn.textContent = '+ Add Pin';
-    map.off('click', handleMapClick);
-  } else {
-    btn.classList.add('active');
-    btn.textContent = 'Tap map to place pin...';
-    map.on('click', handleMapClick);
+function addNewPin() {
+  const center = map.getCenter();
+  openAddPinDialog(center.lat, center.lng);
+
+  if (tempMarker) {
+    map.removeLayer(tempMarker);
   }
-}
-
-function handleMapClick(e) {
-  map.off('click', handleMapClick);
-  openAddPinDialog(e.latlng.lat, e.latlng.lng);
+  const icon = L.divIcon({
+    className: 'custom-pin temp-pin',
+    html: '<span class="pin-icon">📍</span>',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+  });
+  tempMarker = L.marker([center.lat, center.lng], { icon, draggable: true }).addTo(map);
+  tempMarker.on('drag', function () {
+    const pos = tempMarker.getLatLng();
+    document.getElementById('pin-lat').value = pos.lat;
+    document.getElementById('pin-lng').value = pos.lng;
+  });
 }
 
 function openAddPinDialog(lat, lng) {
-  const btn = document.getElementById('btn-add-pin');
-  btn.classList.remove('active');
-  btn.textContent = '+ Add Pin';
-
   document.getElementById('dialog-title').textContent = 'Add Pin';
   document.getElementById('pin-label').value = '';
   document.getElementById('pin-description').value = '';
@@ -198,10 +197,10 @@ function openEditPinDialog(pin) {
 
 function closePinDialog() {
   document.getElementById('pin-dialog').style.display = 'none';
-  const btn = document.getElementById('btn-add-pin');
-  btn.classList.remove('active');
-  btn.textContent = '+ Add Pin';
-  map.off('click', handleMapClick);
+  if (tempMarker) {
+    map.removeLayer(tempMarker);
+    tempMarker = null;
+  }
 }
 
 async function savePinFromDialog() {

@@ -80,14 +80,20 @@ body {
   border-radius: 50px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #btn-add-pin:hover {
   background: #2b6de0;
 }
 
-#btn-add-pin.active {
-  background: #ff6b35;
+.temp-pin .pin-icon {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
 }
 
 /* --- Buttons --- */
@@ -113,10 +119,6 @@ button:active {
 
 .btn-primary:hover {
   background: #2b6de0;
-}
-
-.btn-primary.active {
-  background: #ff6b35;
 }
 
 .btn-secondary {
