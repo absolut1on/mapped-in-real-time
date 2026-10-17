@@ -19,7 +19,6 @@ async function initEditor() {
   }
 
   document.getElementById('user-email').textContent = currentUser.email;
-  document.getElementById('editor-controls').style.display = 'flex';
 
   map = L.map('map', {
     center: CONFIG.DEFAULT_CENTER,
