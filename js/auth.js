@@ -1,4 +1,5 @@
-const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const { createClient } = window.supabase || window.Supabase || {};
+const supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
 async function getSession() {
   const { data: { session } } = await supabase.auth.getSession();

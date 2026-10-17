@@ -1,4 +1,5 @@
-const supabasePublic = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const { createClient: createPublicClient } = window.supabase || window.Supabase || {};
+const supabasePublic = createPublicClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
 let map;
 let markers = new Map();
