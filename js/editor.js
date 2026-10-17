@@ -1,7 +1,6 @@
 let map;
 let markers = new Map();
 let currentUser = null;
-let addPinMode = false;
 
 async function initEditor() {
   const session = await getSession();
@@ -33,11 +32,6 @@ async function initEditor() {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors',
   }).addTo(map);
-
-  map.on('click', (e) => {
-    if (!addPinMode) return;
-    openAddPinDialog(e.latlng.lat, e.latlng.lng);
-  });
 
   await loadPins();
   subscribeToChanges();
@@ -155,15 +149,26 @@ function buildPopupContent(pin) {
 // --- Editor actions ---
 
 function toggleAddPinMode() {
-  addPinMode = !addPinMode;
   const btn = document.getElementById('btn-add-pin');
-  btn.classList.toggle('active', addPinMode);
-  btn.textContent = addPinMode ? 'Click map to place pin...' : 'Add Pin';
-  document.getElementById('map').style.cursor = addPinMode ? 'crosshair' : '';
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active');
+    btn.textContent = 'Add Pin';
+    document.getElementById('map').style.cursor = '';
+    map.off('click', onMapClickForPin);
+    return;
+  }
+
+  btn.classList.add('active');
+  btn.textContent = 'Click map to place pin...';
+  document.getElementById('map').style.cursor = 'crosshair';
+  map.once('click', onMapClickForPin);
+}
+
+function onMapClickForPin(e) {
+  openAddPinDialog(e.latlng.lat, e.latlng.lng);
 }
 
 function openAddPinDialog(lat, lng) {
-  addPinMode = false;
   const btn = document.getElementById('btn-add-pin');
   btn.classList.remove('active');
   btn.textContent = 'Add Pin';
