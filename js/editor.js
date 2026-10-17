@@ -199,6 +199,12 @@ function openEditPinDialog(pin) {
 
 function closePinDialog() {
   document.getElementById('pin-dialog').style.display = 'none';
+  waitingForPin = false;
+  const btn = document.getElementById('btn-add-pin');
+  btn.classList.remove('active');
+  btn.textContent = 'Add Pin';
+  btn.style.display = '';
+  document.getElementById('map').style.cursor = '';
 }
 
 async function savePinFromDialog() {
