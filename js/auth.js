@@ -1,5 +1,12 @@
-const { createClient } = window.supabase || window.Supabase || {};
-const supabase = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+let supabase;
+
+try {
+  const lib = window.supabase;
+  supabase = lib.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+} catch (e) {
+  console.error('Supabase init failed:', e);
+  document.body.innerHTML = '<div style="color:#ff6b6b;padding:40px;text-align:center;">Failed to connect to Supabase. Check config.js values.</div>';
+}
 
 async function getSession() {
   const { data: { session } } = await supabase.auth.getSession();
